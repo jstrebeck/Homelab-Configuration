@@ -31,7 +31,7 @@ proxmox_api_url = "https://0.0.0.0:8006/api2/json"
 # api token id is in the form of: <username>@pam!<tokenId>
 proxmox_api_token_id = "terraform@pam!terraform"
 
-# this is the full secret wrapped in quotes.
+# this is the full secret wrapped in quotes.`
 proxmox_api_token_secret = "XXX"
 
 ```
