@@ -20,6 +20,7 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+.terraform.lock.hcl
 
 # Include override files you do wish to add to version control using negated pattern
 #
@@ -27,3 +28,13 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
+
+#Ignore credential files
+credentials.auto.tfvars
+
+#Ansible files
+join_command.out
+ansible-hosts.txt
+
+#Fast-API-Docker-Image
+venv/
