@@ -16,6 +16,7 @@ resource "proxmox_vm_qemu" "kube" {
   bootdisk = "scsi0"
   ipconfig0 = "ip=192.168.1.12${count.index + 1}/24,gw=192.168.1.69"
   ciuser = "ubuntu"
+  onboot = true
   sshkeys = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPnyNpp2XH6yhl1CFq3ovr6oRb8QgvcVH5a79X5JNYaX josh@strebeck.net"
   disk {
     slot = 0
