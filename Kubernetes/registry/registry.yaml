@@ -1,0 +1,67 @@
+# registry-namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: registry
+
+---
+# registry-pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: registry-data
+  namespace: registry
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi  # Adjust based on your needs
+---
+# registry-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+  namespace: registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      containers:
+      - name: registry
+        image: registry:2
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: registry-data
+          mountPath: /var/lib/registry
+        env:
+        - name: REGISTRY_STORAGE_DELETE_ENABLED
+          value: "true"
+      volumes:
+      - name: registry-data
+        persistentVolumeClaim:
+          claimName: registry-data
+
+---
+# registry-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: registry
+  namespace: registry
+spec:
+  type: LoadBalancer
+  selector:
+    app: registry
+  ports:
+  - port: 5000
+    targetPort: 5000
+    nodePort: 30500  # Access via any node IP on port 30500

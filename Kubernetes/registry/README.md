@@ -1,0 +1,2 @@
+#Patch
+talosctl patch mc -p @talos-patch.yaml -n 192.168.2.104,192.168.2.105,192.168.2.106,192.168.2.107

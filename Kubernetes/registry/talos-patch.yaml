@@ -1,0 +1,5 @@
+# talos-registry-patch.yaml
+machine:
+  registries:
+    insecure:
+      - 192.168.1.203:30500

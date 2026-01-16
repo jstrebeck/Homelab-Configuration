@@ -1,0 +1,9 @@
+# longhorn-extensions-patch.yaml
+machine:
+  kernel:
+    modules:
+      - name: iscsi_tcp
+  install:
+    extensions:
+      - image: ghcr.io/siderolabs/iscsi-tools:v0.1.4
+      - image: ghcr.io/siderolabs/util-linux-tools:2.38.1
