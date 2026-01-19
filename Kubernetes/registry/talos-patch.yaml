@@ -1,5 +1,13 @@
-# talos-registry-patch.yaml
 machine:
   registries:
-    insecure:
-      - 192.168.1.203:30500
+    mirrors:
+      192.168.2.203:5000:
+        endpoints:
+          - http://192.168.2.203:5000
+    config:
+      192.168.2.203:5000:
+        tls:
+          insecureSkipVerify: true
+        auth:
+          username: ""
+          password: ""

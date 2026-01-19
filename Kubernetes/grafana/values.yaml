@@ -1,0 +1,14 @@
+grafana:
+  persistence:
+    enabled: true
+    size: 10Gi
+  
+  service:
+    type: LoadBalancer
+    port: 80
+    # Optional: specify a specific IP if your LoadBalancer supports it
+    # loadBalancerIP: 192.168.1.100
+
+prometheus:
+  prometheusSpec:
+    retention: 7d

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared-tunnel
+  namespace: default # Change if you use a different namespace
+spec:
+  replicas: 2 # Run multiple replicas for high availability
+  selector:
+    matchLabels:
+      app: cloudflared-tunnel
+  template:
+    metadata:
+      labels:
+        app: cloudflared-tunnel
+    spec:
+      containers:
+      - name: cloudflared
+        image: cloudflare/cloudflared:latest # Use a specific version for stability
+        args:
+        - tunnel
+        - --no-autoupdate
+        - run
+        env:
+        - name: TUNNEL_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-tunnel-token
+              key: token
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudflared-service
+  namespace: default # Change if you use a different namespace
+spec:
+  selector:
+    app: cloudflared-tunnel
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080 # Default port cloudflared proxies to if no config file is used
