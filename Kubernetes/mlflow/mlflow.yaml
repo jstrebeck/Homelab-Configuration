@@ -1,3 +1,6 @@
+# Former artifact store. No longer mounted by the server (artifacts live in S3
+# on SeaweedFS); kept as the source for migrate-artifacts-job.yaml and for
+# rollback. Delete once the S3 store has been verified.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -18,6 +21,10 @@ metadata:
   namespace: mlops
 spec:
   replicas: 1
+  # RWO artifact volume, and the schema migration below must not run while an
+  # older server is still connected: stop the old pod before starting the new one.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: mlflow
@@ -26,9 +33,19 @@ spec:
       labels:
         app: mlflow
     spec:
+      initContainers:
+        # Upgrades the backend schema to this image's MLflow version. A no-op
+        # when already current. One-way: back up Postgres before bumping the tag.
+        - name: db-upgrade
+          image: 192.168.2.203:5000/mlflow:3.16.1
+          args:
+            - mlflow
+            - db
+            - upgrade
+            - postgresql://mlflow:mlflow@mlflow-postgres:5432/mlflow
       containers:
         - name: mlflow
-          image: 192.168.2.203:5000/mlflow:latest
+          image: 192.168.2.203:5000/mlflow:3.16.1
           ports:
             - containerPort: 5000
           args:
@@ -39,10 +56,29 @@ spec:
             - --backend-store-uri=postgresql://mlflow:mlflow@mlflow-postgres:5432/mlflow
             - --default-artifact-root=mlflow-artifacts:/
             - --serve-artifacts
-            - --artifacts-destination=/mlflow/artifacts
-          volumeMounts:
-            - name: artifacts
-              mountPath: /mlflow/artifacts
+            # Proxied artifacts: clients only see mlflow-artifacts:/ URIs, the
+            # server stores them in S3. Keys map 1:1, so s3://mlflow-artifacts/<path>
+            # is what KServe's storage initializer reads.
+            - --artifacts-destination=s3://mlflow-artifacts
+            # MLflow 3 rejects unknown Host headers (DNS-rebinding protection).
+            # Its default allows localhost and private IPs (so 192.168.2.202
+            # works) but not in-cluster DNS names like mlflow.mlops.svc.
+            - --allowed-hosts=mlflow,mlflow.mlops,mlflow.mlops.svc,mlflow.mlops.svc.cluster.local,mlflow*:*,localhost,localhost:*,127.0.0.1,127.0.0.1:*,10.*,172.*,192.168.*
+          env:
+            - name: MLFLOW_S3_ENDPOINT_URL
+              value: http://seaweedfs.seaweedfs.svc:8333
+            - name: AWS_DEFAULT_REGION
+              value: us-east-1
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: mlflow-s3
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mlflow-s3
+                  key: AWS_SECRET_ACCESS_KEY
           readinessProbe:
             httpGet:
               path: /health
@@ -55,10 +91,6 @@ spec:
               port: 5000
             initialDelaySeconds: 15
             periodSeconds: 30
-      volumes:
-        - name: artifacts
-          persistentVolumeClaim:
-            claimName: mlflow-artifacts-pvc
 ---
 apiVersion: v1
 kind: Service

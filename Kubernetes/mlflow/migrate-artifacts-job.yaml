@@ -1,0 +1,46 @@
+# One-off copy of the old PVC artifact store into s3://mlflow-artifacts.
+# Paths are kept identical, so existing runs' mlflow-artifacts:/ URIs resolve
+# unchanged after the switch. The PVC is RWO: scale MLflow to 0 first.
+# See README.md "Moving artifacts to S3".
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mlflow-migrate-artifacts
+  namespace: mlops
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 86400
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: sync
+          image: amazon/aws-cli:2.37.5
+          args:
+            - --endpoint-url=http://seaweedfs.seaweedfs.svc:8333
+            - s3
+            - sync
+            - /mlflow/artifacts
+            - s3://mlflow-artifacts
+            - --exclude=lost+found/*
+          env:
+            - name: AWS_DEFAULT_REGION
+              value: us-east-1
+          envFrom:
+            - secretRef:
+                name: mlflow-s3
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          volumeMounts:
+            - name: artifacts
+              mountPath: /mlflow/artifacts
+              readOnly: true
+      volumes:
+        - name: artifacts
+          persistentVolumeClaim:
+            claimName: mlflow-artifacts-pvc
+            readOnly: true
