@@ -1,0 +1,18 @@
+# Namespace for the payments-fraud-detection project.
+# Workloads inside it (payments API, InferenceService, simulator) are deployed
+# from that repo; this folder only provides the namespace and platform plumbing.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fraud
+---
+# Used by InferenceServices so the KServe storage initializer can pull model
+# artifacts from S3 (SeaweedFS). The `s3-credentials` Secret is created by
+# hand; see README.md.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kserve-sa
+  namespace: fraud
+secrets:
+  - name: s3-credentials
