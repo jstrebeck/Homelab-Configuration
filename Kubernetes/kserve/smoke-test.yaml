@@ -1,0 +1,20 @@
+# Throwaway InferenceService to prove KServe works end to end. Pulls a public
+# sklearn model from GCS, so no S3 credentials are needed. Delete after testing.
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: sklearn-iris
+  namespace: kserve-test
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: sklearn
+      storageUri: gs://kfserving-examples/models/sklearn/1.0/model
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi

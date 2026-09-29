@@ -1,0 +1,29 @@
+# cert-manager, installed only so KServe's admission webhook gets a TLS cert.
+# Nothing here talks to ACME or issues public certificates: KServe creates its
+# own self-signed Issuer in the `kserve` namespace. See README.md.
+crds:
+  enabled: true
+  keep: true
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
+
+webhook:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 128Mi
+
+cainjector:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      memory: 256Mi

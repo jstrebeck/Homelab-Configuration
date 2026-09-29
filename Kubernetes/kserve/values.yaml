@@ -1,0 +1,11 @@
+# Values for oci://ghcr.io/kserve/charts/kserve-resources.
+# Standard mode (formerly "RawDeployment"): plain Deployments + Services + HPA.
+# No Knative, no Istio, no ingress: InferenceServices are called in-cluster via
+# their `<name>-predictor.<ns>.svc` Service.
+kserve:
+  version: v0.20.0
+  controller:
+    deploymentMode: Standard
+    gateway:
+      disableIngressCreation: true
+      disableIstioVirtualHost: true

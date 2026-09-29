@@ -1,0 +1,7 @@
+# Values for oci://ghcr.io/kserve/charts/kserve-runtime-configs.
+# Installs the ClusterServingRuntimes, including MLServer, which serves
+# `modelFormat: mlflow` models.
+kserve:
+  version: v0.20.0
+  servingruntime:
+    enabled: true
