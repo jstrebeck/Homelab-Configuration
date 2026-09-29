@@ -1,0 +1,19 @@
+{
+  "identities": [
+    {
+      "name": "mlflow",
+      "credentials": [{ "accessKey": "<mlflow-access-key>", "secretKey": "<mlflow-secret-key>" }],
+      "actions": [
+        "Read:mlflow-artifacts",
+        "Write:mlflow-artifacts",
+        "List:mlflow-artifacts",
+        "Tagging:mlflow-artifacts"
+      ]
+    },
+    {
+      "name": "kserve-fraud",
+      "credentials": [{ "accessKey": "<kserve-access-key>", "secretKey": "<kserve-secret-key>" }],
+      "actions": ["Read:mlflow-artifacts", "List:mlflow-artifacts"]
+    }
+  ]
+}
