@@ -38,3 +38,5 @@ ansible-hosts.txt
 
 #Fast-API-Docker-Image
 venv/
+# CI render output (scripts/render-apps.py)
+rendered/

@@ -1,5 +1,6 @@
 # Homelab Configuration
 
+[![Validate](https://github.com/jstrebeck/Homelab-Configuration/actions/workflows/validate.yaml/badge.svg)](https://github.com/jstrebeck/Homelab-Configuration/actions/workflows/validate.yaml)
 ![Talos](https://img.shields.io/badge/Talos-v1.11-FF7300?logo=talos&logoColor=white)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-v1.34-326CE5?logo=kubernetes&logoColor=white)
 ![Argo CD](https://img.shields.io/badge/GitOps-Argo%20CD%20v3.5-EF7B4D?logo=argo&logoColor=white)
@@ -99,6 +100,20 @@ one or more `Application`s.
 3. Application repositories own their workloads. Their CI builds and pushes
    an image, then bumps the tag in their own `deploy/overlays/homelab`, which
    Argo CD picks up. This repo only holds the `Application` pointing at it.
+
+**Checks on every pull request** ([`validate.yaml`](.github/workflows/validate.yaml))
+
+- [`scripts/render-apps.py`](scripts/render-apps.py) renders every
+  `Application` exactly as Argo CD would (Helm with the pinned chart and
+  values, kustomize, or a filtered directory) and fails if a path or values
+  file is missing.
+- `kubeconform` validates the output against the Kubernetes 1.34 schemas and
+  the CRD schemas (Ceph, Prometheus, cert-manager, KServe, ...).
+- `terraform fmt` and a `gitleaks` scan of the full history.
+
+Chart and image versions are kept current by [Renovate](renovate.json), which
+opens a pull request per update (Rook-Ceph and KServe charts grouped, majors
+held for approval). Merging the PR is the upgrade.
 
 **Guardrails**
 

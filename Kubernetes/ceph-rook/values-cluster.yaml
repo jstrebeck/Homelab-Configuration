@@ -5,6 +5,11 @@
 operatorNamespace: rook-ceph
 
 cephClusterSpec:
+  mgr:
+    # The chart's default is an empty key, which renders as null and fails
+    # schema validation. Same meaning: no extra mgr modules.
+    modules: []
+
   # CPU requests sized down from the chart defaults (500m-1000m per daemon) for
   # a 4-node homelab; memory is unchanged.
   resources:

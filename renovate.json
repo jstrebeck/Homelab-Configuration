@@ -1,0 +1,45 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "America/Los_Angeles",
+  "schedule": ["before 6am on saturday"],
+  "labels": ["dependencies"],
+  "argocd": {
+    "managerFilePatterns": ["/^Kubernetes/argocd/apps/.+\\.yaml$/"]
+  },
+  "kubernetes": {
+    "managerFilePatterns": ["/^Kubernetes/.+\\.yaml$/"]
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "MetalLB native manifest pinned by URL",
+      "managerFilePatterns": ["/^Kubernetes/metallb/kustomization\\.yaml$/"],
+      "matchStrings": ["metallb/metallb/(?<currentValue>v[\\d.]+)/config"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "metallb/metallb"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Images from the in-cluster registry are built from other repos",
+      "matchPackageNames": ["192.168.2.203:5000/**"],
+      "enabled": false
+    },
+    {
+      "description": "Operator and cluster charts must move together",
+      "matchPackageNames": ["rook-ceph", "rook-ceph-cluster"],
+      "groupName": "Rook-Ceph"
+    },
+    {
+      "description": "KServe CRDs, controller and runtimes share a version",
+      "matchPackageNames": ["ghcr.io/kserve/charts/**"],
+      "groupName": "KServe"
+    },
+    {
+      "description": "Major upgrades wait for approval on the dependency dashboard",
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    }
+  ]
+}
