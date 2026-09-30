@@ -93,3 +93,30 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true
+---
+# ClusterStorageContainer for storageUri: models:/<name>@<alias> (MLflow registry).
+# The image is built and pushed by hand from ../kserve/mlflow-storage-initializer/.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kserve-mlflow-initializer
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kserve
+  source:
+    repoURL: https://github.com/jstrebeck/Homelab-Configuration.git
+    targetRevision: main
+    path: Kubernetes/kserve/mlflow-storage-initializer
+    directory:
+      include: 'cluster-storage-container.yaml'
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+      - RespectIgnoreDifferences=true

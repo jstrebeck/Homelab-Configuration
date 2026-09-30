@@ -24,7 +24,7 @@ argocd/
     rook-ceph.yaml     operator + cluster charts, values in ../ceph-rook/
     monitoring.yaml    kube-prometheus-stack, values in ../grafana/
     cert-manager.yaml  values in ../cert-manager/
-    kserve.yaml        kserve-crd, kserve, kserve-runtimes
+    kserve.yaml        kserve-crd, kserve, kserve-runtimes, kserve-mlflow-initializer
     seaweedfs.yaml     ../seaweedfs/seaweedfs.yaml
     mlflow.yaml        ../mlflow/ (namespace, postgres, server)
     registry.yaml      ../registry/registry.yaml

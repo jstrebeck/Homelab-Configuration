@@ -37,8 +37,11 @@ pods". Git does not change.
 ```
 docker build -t 192.168.2.203:5000/mlflow-storage-initializer:0.1.0 .
 docker push 192.168.2.203:5000/mlflow-storage-initializer:0.1.0
-kubectl apply -f cluster-storage-container.yaml
 ```
+
+The `ClusterStorageContainer` is deployed by Argo CD
+(`../../argocd/apps/kserve.yaml`, app `kserve-mlflow-initializer`); a new
+image tag goes live by merging the tag change in `cluster-storage-container.yaml`.
 
 ## Test without the cluster
 
