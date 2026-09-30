@@ -94,6 +94,8 @@ only manifest ever applied by hand; it points at
 [`Kubernetes/argocd/apps/`](Kubernetes/argocd/apps/), where each file declares
 one or more `Application`s.
 
+![Argo CD applications view: every platform component and workload, synced from Git](img/argo.png)
+
 1. A change (new chart version, values tweak, new component) lands on `main`
    through a pull request.
 2. Argo CD detects the new revision and syncs the affected applications.
