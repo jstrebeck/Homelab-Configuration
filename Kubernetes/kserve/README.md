@@ -17,6 +17,8 @@ in-cluster at `http://<isvc>-predictor.<namespace>.svc`.
   - `kserve-resources`: controller + webhook, values in `values.yaml`
   - `kserve-runtime-configs`: ClusterServingRuntimes (sklearn, xgboost,
     MLServer for `mlflow`, ...), values in `runtime-values.yaml`
+- **MLflow storage initializer:** `mlflow-storage-initializer/`, a
+  `ClusterStorageContainer` for `storageUri: models:/<name>@<alias>`.
 - **Depends on:** cert-manager (`../cert-manager/`) for the webhook's
   self-signed cert.
 
@@ -32,6 +34,9 @@ kubectl -n kserve rollout status deploy/kserve-controller-manager
 
 helm install kserve-runtimes oci://ghcr.io/kserve/charts/kserve-runtime-configs \
   --version v0.20.0 --namespace kserve -f runtime-values.yaml
+
+# models:/ storage URIs (MLflow registry); see mlflow-storage-initializer/README.md
+kubectl apply -f mlflow-storage-initializer/cluster-storage-container.yaml
 ```
 
 ## Verify
@@ -56,12 +61,13 @@ kubectl delete namespace kserve-test
 
 ## Model storage
 
-The storage initializer pulls models before the predictor starts. MLflow
-stores artifacts in `s3://mlflow-artifacts` on SeaweedFS (`../seaweedfs/`).
-For a registered model, translate its `mlflow-artifacts:/<path>` source to
-`storageUri: s3://mlflow-artifacts/<path>` and set `serviceAccountName` to one
-that references a read-only S3 credentials Secret (see `../fraud/` for the
-pattern).
+The storage initializer pulls models before the predictor starts. For
+MLflow-registered models use `storageUri: models:/<name>@<alias>`: the
+`mlflow` ClusterStorageContainer (`mlflow-storage-initializer/`) resolves it
+against the homelab MLflow and downloads through the artifact proxy, with no
+S3 credentials. Raw `s3://mlflow-artifacts/<path>` URIs still work with the
+default initializer and a ServiceAccount referencing an S3 credentials Secret
+(see `../fraud/`).
 
 ## Teardown
 

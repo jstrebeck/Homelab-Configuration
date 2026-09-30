@@ -1,0 +1,35 @@
+# Lets any InferenceService in the cluster use storageUri: models:/<name>@<alias>
+# (or models:/<name>/<version>). KServe runs this image as the storage-initializer
+# init container with args [<storageUri>, /mnt/models].
+apiVersion: serving.kserve.io/v1alpha1
+kind: ClusterStorageContainer
+metadata:
+  name: mlflow
+spec:
+  workloadType: initContainer
+  supportedUriFormats:
+    - prefix: models:/
+  container:
+    name: storage-initializer
+    image: 192.168.2.203:5000/mlflow-storage-initializer:0.1.0
+    imagePullPolicy: IfNotPresent
+    env:
+      - name: MLFLOW_TRACKING_URI
+        value: http://mlflow.mlops.svc
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: "1"
+        memory: 256Mi
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65532
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+          - ALL
+      seccompProfile:
+        type: RuntimeDefault

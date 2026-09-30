@@ -8,7 +8,7 @@ what the cluster has to provide first.
 | Resource | Purpose | Source |
 |---|---|---|
 | Namespace `fraud` | Home for the project | `namespace.yaml` |
-| ServiceAccount `kserve-sa` | KServe storage initializer identity | `namespace.yaml` |
+| ServiceAccount `kserve-sa` | KServe storage initializer identity for raw `s3://` storage URIs. `fraud-detector` itself uses `models:/fraud-detector@champion` via `../kserve/mlflow-storage-initializer/` and needs no S3 keys. | `namespace.yaml` |
 | Secret `s3-credentials` | Read-only S3 keys for pulling models from `mlflow-artifacts` | created by hand, see below |
 | Postgres `payments-postgres` + Secrets `payments-postgres`, `payments-db` | Payments API database | [`../databases/payments/`](../databases/payments/) |
 
