@@ -10,14 +10,35 @@ MLflow tracking server + model registry in the `mlops` namespace. Shared by ML p
 - **Allowed hosts:** MLflow 3 rejects requests whose `Host` header is not allowed. `--allowed-hosts` in `mlflow.yaml` covers the service DNS names, localhost and private IP ranges. Add any new hostname (e.g. a Cloudflare tunnel name) there, or clients get `403 Invalid Host header`.
 
 ## Deploy
-Requires SeaweedFS (`../seaweedfs/`) with the `mlflow-artifacts` bucket, and
-Secret `mlflow-s3` (see "Moving artifacts to S3", step 1).
+Requires SeaweedFS (`../seaweedfs/`) with the `mlflow-artifacts` bucket,
+Secret `mlflow-s3` (see "Moving artifacts to S3", step 1) and Secret
+`mlflow-postgres` (below).
 ```
 docker build -t 192.168.2.203:5000/mlflow:3.16.1 .
 docker push 192.168.2.203:5000/mlflow:3.16.1
 kubectl apply -f namespace.yaml
+kubectl -n mlops create secret generic mlflow-postgres \
+  --from-literal=POSTGRES_DB=mlflow \
+  --from-literal=POSTGRES_USER=mlflow \
+  --from-literal=POSTGRES_PASSWORD="$(openssl rand -hex 24)"
 kubectl apply -f postgres.yaml
 kubectl apply -f mlflow.yaml
+```
+
+Under Argo CD (`../argocd/apps/mlflow.yaml`) only the Secrets are created by
+hand; the manifests sync from Git.
+
+### Rotating the database password
+
+The server and its `db-upgrade` init container build the connection string
+from `POSTGRES_PASSWORD` in Secret `mlflow-postgres`. `POSTGRES_PASSWORD` only
+seeds a new data directory, so change the role in Postgres too:
+
+```
+NEW=$(openssl rand -hex 24)
+kubectl -n mlops patch secret mlflow-postgres -p "{\"stringData\":{\"POSTGRES_PASSWORD\":\"$NEW\"}}"
+echo "ALTER USER mlflow PASSWORD '$NEW';" | kubectl -n mlops exec -i deploy/mlflow-postgres -- psql -U mlflow -d mlflow
+kubectl -n mlops rollout restart deploy/mlflow   # Recreate: ~1 min of downtime
 ```
 
 ## Upgrading MLflow
