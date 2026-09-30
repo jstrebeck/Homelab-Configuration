@@ -46,6 +46,12 @@ spec:
     - repoURL: https://github.com/jstrebeck/Homelab-Configuration.git
       targetRevision: main
       ref: values
+  ignoreDifferences:
+    # The controller relabels its own ServiceAccount at startup.
+    - kind: ServiceAccount
+      name: kserve-controller-manager
+      jsonPointers:
+        - /metadata/labels/app.kubernetes.io~1managed-by
   syncPolicy:
     syncOptions:
       - CreateNamespace=true

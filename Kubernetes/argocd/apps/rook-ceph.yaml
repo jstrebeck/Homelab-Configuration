@@ -22,6 +22,14 @@ spec:
     - repoURL: https://github.com/jstrebeck/Homelab-Configuration.git
       targetRevision: main
       ref: values
+  ignoreDifferences:
+    # Scaled to 0 on the live cluster while Rook's own CSI deployments do the
+    # work. Left as found until that's investigated.
+    - group: apps
+      kind: Deployment
+      name: ceph-csi-controller-manager
+      jsonPointers:
+        - /spec/replicas
   syncPolicy:
     syncOptions:
       - CreateNamespace=true

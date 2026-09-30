@@ -22,6 +22,18 @@ spec:
     - repoURL: https://github.com/jstrebeck/Homelab-Configuration.git
       targetRevision: main
       ref: values
+  ignoreDifferences:
+    # The Grafana chart generates a random admin password on every render
+    # (Helm's `lookup` isn't available to Argo CD). Keep the live one.
+    - kind: Secret
+      name: kube-prometheus-stack-grafana
+      jsonPointers:
+        - /data/admin-password
+    - group: apps
+      kind: Deployment
+      name: kube-prometheus-stack-grafana
+      jsonPointers:
+        - /spec/template/metadata/annotations/checksum~1secret
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
