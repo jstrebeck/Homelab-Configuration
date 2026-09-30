@@ -6,7 +6,8 @@
 ![Argo CD](https://img.shields.io/badge/GitOps-Argo%20CD%20v3.5-EF7B4D?logo=argo&logoColor=white)
 ![Ceph](https://img.shields.io/badge/Storage-Rook--Ceph-EF5C55?logo=ceph&logoColor=white)
 
-Declarative configuration for a four-node Kubernetes cluster and the
+Declarative configuration for a four-node Kubernetes cluster (Talos Linux VMs
+on Proxmox VE) and the
 platform services running on it. Everything the cluster runs is defined in
 this repository and delivered by Argo CD: merging to `main` is the deployment.
 
@@ -17,7 +18,7 @@ flowchart LR
   dev([Pull request]) --> gh[(GitHub<br/>this repo)]
   app([App repo CI]) -- image tag bump --> ghapp[(GitHub<br/>app repos)]
 
-  subgraph cluster["Talos Linux · Kubernetes v1.34 · 1 control plane + 3 workers"]
+  subgraph cluster["Proxmox VE · Talos Linux VMs · Kubernetes v1.34 · 1 control plane + 3 workers"]
     argo[Argo CD<br/>app of apps]
 
     subgraph platform[Platform]
@@ -61,6 +62,7 @@ flowchart LR
 
 | | |
 |---|---|
+| **Nodes** | Proxmox VE virtual machines |
 | **OS** | [Talos Linux](https://www.talos.dev/) v1.11: immutable, API-managed, no SSH |
 | **Kubernetes** | v1.34, 1 control-plane node + 3 workers, 8 vCPU / 32 GiB each |
 | **Networking** | Flannel CNI; MetalLB in L2 mode hands out `192.168.2.201-250` to `LoadBalancer` Services |
@@ -138,7 +140,12 @@ Terraform/          Proxmox VM definitions (first-generation cluster and utility
 Ansible/            kubeadm playbooks for the first-generation cluster
 cloud-init/         Proxmox Ubuntu cloud-init template
 EKS/                EKS Anywhere bare-metal hardware inventory (experiment)
+docs/adr/           Architecture Decision Records
+scripts/            CI helpers (render every Argo CD Application)
 ```
+
+Design decisions and their trade-offs are recorded as
+[Architecture Decision Records](docs/adr/).
 
 Every component directory has a README covering what it is, why it's
 configured the way it is, how to deploy it by hand, and how to verify and tear

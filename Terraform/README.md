@@ -14,8 +14,7 @@ provider. Each directory is an independent root module that clones the
 | `OVPN/` | `ovpn` | OpenVPN server |
 
 > These modules target the original `192.168.1.0/24` network and predate the
-> current Talos cluster, which is installed from the Talos ISO rather than
-> cloned from this template.
+> current Talos cluster; its VMs are not built from this template.
 
 ## Cloud-init template
 
