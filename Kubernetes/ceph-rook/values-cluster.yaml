@@ -4,6 +4,12 @@
 # ceph-objectstore pools.
 operatorNamespace: rook-ceph
 
+# Ceph mgr and exporter metrics scraped by kube-prometheus-stack, plus Rook's
+# Ceph alert rules. Dashboards: ../grafana/dashboards/.
+monitoring:
+  enabled: true
+  createPrometheusRules: true
+
 cephClusterSpec:
   mgr:
     # The chart's default is an empty key, which renders as null and fails

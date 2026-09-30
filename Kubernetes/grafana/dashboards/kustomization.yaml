@@ -1,0 +1,25 @@
+# Grafana dashboards as ConfigMaps. The Grafana sidecar loads every ConfigMap
+# labelled grafana_dashboard=1 without a restart; grafana_folder sets the folder.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    grafana_dashboard: "1"
+configMapGenerator:
+  - name: dashboard-homelab-overview
+    files:
+      - homelab-overview.json
+    options:
+      annotations:
+        grafana_folder: Homelab
+  # From Rook v1.18.8 (deploy/examples/monitoring/grafana), unmodified.
+  - name: dashboard-ceph
+    files:
+      - ceph-cluster.json
+      - ceph-osd.json
+      - ceph-pools.json
+    options:
+      annotations:
+        grafana_folder: Ceph

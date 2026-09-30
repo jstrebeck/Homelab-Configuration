@@ -22,7 +22,8 @@ argocd/
     argocd.yaml        Argo CD itself
     metallb.yaml       upstream native manifest + ../metallb/metallb.yaml (kustomize)
     rook-ceph.yaml     operator + cluster charts, values in ../ceph-rook/
-    monitoring.yaml    kube-prometheus-stack, values in ../grafana/
+    monitoring.yaml    kube-prometheus-stack (values in ../grafana/) and the
+                       grafana-dashboards app (../grafana/dashboards/)
     cert-manager.yaml  values in ../cert-manager/
     kserve.yaml        kserve-crd, kserve, kserve-runtimes, kserve-mlflow-initializer
     seaweedfs.yaml     ../seaweedfs/seaweedfs.yaml

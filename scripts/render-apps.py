@@ -54,6 +54,8 @@ def render_helm(app, source, value_refs, kube_version):
         "--namespace", app["spec"]["destination"]["namespace"],
         "--kube-version", kube_version,
         "--include-crds",
+        # Installed on the cluster; charts gate their ServiceMonitors on it.
+        "--api-versions", "monitoring.coreos.com/v1",
     ]
     for vf in source.get("helm", {}).get("valueFiles", []):
         ref, _, rel = vf.partition("/")

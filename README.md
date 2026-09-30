@@ -77,7 +77,7 @@ flowchart LR
 | [Argo CD](Kubernetes/argocd/) | `argocd` | GitOps controller, manages itself | Helm `argo-cd` 10.9.4 |
 | [MetalLB](Kubernetes/metallb/) | `metallb-system` | Bare-metal `LoadBalancer` IPs | Upstream manifest v0.14.5 + kustomize |
 | [Rook-Ceph](Kubernetes/ceph-rook/) | `rook-ceph` | Distributed block, file and object storage | Helm `rook-ceph` + `rook-ceph-cluster` v1.18.8 |
-| [kube-prometheus-stack](Kubernetes/grafana/) | `monitoring` | Prometheus, Alertmanager, Grafana, node-exporter | Helm 81.0.0 |
+| [kube-prometheus-stack](Kubernetes/grafana/) | `monitoring` | Prometheus, Alertmanager, Grafana, node-exporter; dashboards from Git | Helm 81.0.0 + kustomize |
 | [cert-manager](Kubernetes/cert-manager/) | `cert-manager` | Webhook certificates (KServe) | Helm v1.21.2 |
 | [KServe](Kubernetes/kserve/) | `kserve` | Model serving in Standard (raw Deployment) mode | Helm v0.20.0 (CRDs, controller, runtimes) |
 | [SeaweedFS](Kubernetes/seaweedfs/) | `seaweedfs` | S3-compatible object store for ML artifacts | Manifest |
@@ -85,6 +85,40 @@ flowchart LR
 | [Registry](Kubernetes/registry/) | `registry` | Private container registry | Manifest |
 | [cloudflared](Kubernetes/cloudflare/) | `default` | Cloudflare Tunnel connector | Manifest |
 | [Databases](Kubernetes/databases/) | per consumer | PostgreSQL, one instance per application | Manifest |
+
+## Observability
+
+```mermaid
+flowchart LR
+  subgraph sources[Metric sources]
+    direction TB
+    ne[node-exporter<br/>every node]
+    ksm[kube-state-metrics]
+    ceph[Ceph mgr + exporter]
+    argo[Argo CD controller]
+    apps[Workload ServiceMonitors<br/>SeaweedFS · payments API · model server]
+  end
+  sources -- scrape --> prom[(Prometheus<br/>7 d on Ceph)]
+  prom --> graf[Grafana<br/>dashboards from Git]
+  prom -- alert rules --> am[Alertmanager]
+```
+
+[kube-prometheus-stack](Kubernetes/grafana/) runs Prometheus, Alertmanager and
+Grafana. Prometheus picks up every `ServiceMonitor` and `PrometheusRule` in the
+cluster, so a component becomes monitored by shipping one alongside its
+manifests: Rook adds the Ceph metrics and alert rules, Argo CD exposes the sync
+and health of every Application, and application repos bring their own.
+
+Dashboards live in Git as ConfigMaps
+([`Kubernetes/grafana/dashboards/`](Kubernetes/grafana/dashboards/)) and are
+loaded by Grafana's sidecar without a restart:
+
+- **Homelab overview:** node readiness, CPU and memory; Ceph health, capacity,
+  throughput and IOPS; Argo CD sync and health per Application; firing alerts;
+  workloads missing replicas.
+- **Ceph:** cluster, per-OSD and per-pool dashboards maintained by Rook.
+- **Kubernetes:** the chart's standard cluster, node, namespace and workload
+  dashboards.
 
 ## GitOps workflow
 

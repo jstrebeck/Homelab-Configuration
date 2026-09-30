@@ -1,14 +1,55 @@
+# Values for kube-prometheus-stack (https://prometheus-community.github.io/helm-charts).
+# Delivered by Argo CD: ../argocd/apps/monitoring.yaml
+
 grafana:
+  # The dashboards volume is ReadWriteOnce, so stop the old pod before starting
+  # the new one. (Same effect as Recreate, which server-side apply can't switch
+  # to from the defaulted RollingUpdate on the live Deployment.)
+  deploymentStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   persistence:
     enabled: true
     size: 10Gi
-  
   service:
     type: LoadBalancer
     port: 80
-    # Optional: specify a specific IP if your LoadBalancer supports it
-    # loadBalancerIP: 192.168.1.100
+  sidecar:
+    dashboards:
+      # Dashboards are ConfigMaps labelled grafana_dashboard=1 in any namespace
+      # (see dashboards/). The grafana_folder annotation picks the folder.
+      folderAnnotation: grafana_folder
+      provider:
+        foldersFromFilesStructure: true
+
+# Talos binds the controller manager, scheduler and kube-proxy metrics to
+# localhost, so Prometheus can't reach them and they only produce TargetDown
+# alerts. Re-enable after setting their bind addresses in the Talos config.
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
 
 prometheus:
   prometheusSpec:
     retention: 7d
+    retentionSize: 18GB
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ceph-block
+          accessModes: [ReadWriteOnce]
+          resources:
+            requests:
+              storage: 20Gi
+    # Pick up every ServiceMonitor, PodMonitor, Probe and PrometheusRule in the
+    # cluster, not only those labelled release=kube-prometheus-stack. Rook and
+    # application repos create their own.
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false

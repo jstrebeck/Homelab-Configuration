@@ -49,3 +49,29 @@ spec:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true
       - ServerSideApply=true
+---
+# Dashboards as ConfigMaps (../grafana/dashboards); Grafana's sidecar loads them.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana-dashboards
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-4"
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  source:
+    repoURL: https://github.com/jstrebeck/Homelab-Configuration.git
+    targetRevision: main
+    path: Kubernetes/grafana/dashboards
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      # The Ceph dashboards exceed the size limit of the annotation that
+      # client-side apply stores.
+      - ServerSideApply=true

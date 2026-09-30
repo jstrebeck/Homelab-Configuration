@@ -5,3 +5,7 @@ tolerations:
   - key: node-role.kubernetes.io/control-plane
     operator: Exists
     effect: NoSchedule
+
+# Lets the operator create the ServiceMonitors for the Ceph cluster.
+monitoring:
+  enabled: true
