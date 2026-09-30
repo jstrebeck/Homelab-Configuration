@@ -71,6 +71,12 @@ spec:
             # Its default allows localhost and private IPs (so 192.168.2.202
             # works) but not in-cluster DNS names like mlflow.mlops.svc.
             - --allowed-hosts=mlflow,mlflow.mlops,mlflow.mlops.svc,mlflow.mlops.svc.cluster.local,mlflow*:*,localhost,localhost:*,127.0.0.1,127.0.0.1:*,10.*,172.*,192.168.*
+            # MLflow 3 also rejects browser POSTs whose Origin is not listed
+            # ("Blocked cross-origin request"), and it does not know its own LAN
+            # URL: without this the UI's own calls from http://192.168.2.202 get
+            # 403 (GenAI overview charts, some run searches). Add any other URL
+            # the UI is opened from (e.g. a Cloudflare hostname) here too.
+            - --cors-allowed-origins=http://192.168.2.202,http://localhost:5000,http://127.0.0.1:5000
           env:
             - name: POSTGRES_PASSWORD
               valueFrom:
