@@ -116,9 +116,12 @@ loaded by Grafana's sidecar without a restart:
 - **Homelab overview:** node readiness, CPU and memory; Ceph health, capacity,
   throughput and IOPS; Argo CD sync and health per Application; firing alerts;
   workloads missing replicas.
+- **Kubernetes:** object counts, CPU and memory requests and limits against
+  capacity, per-namespace and per-node usage, CPU throttling and restarts.
 - **Ceph:** cluster, per-OSD and per-pool dashboards maintained by Rook.
-- **Kubernetes:** the chart's standard cluster, node, namespace and workload
-  dashboards.
+- The chart's standard cluster, node, namespace and workload dashboards.
+
+![Homelab overview dashboard in Grafana](img/kube-dash.png)
 
 ## GitOps workflow
 

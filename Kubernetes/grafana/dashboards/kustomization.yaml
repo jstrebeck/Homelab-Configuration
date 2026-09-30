@@ -14,6 +14,14 @@ configMapGenerator:
     options:
       annotations:
         grafana_folder: Homelab
+  # Cluster-wide Kubernetes view; exported from Grafana, per-node panels
+  # relabelled with node names.
+  - name: dashboard-kubernetes-overview
+    files:
+      - kubernetes-overview.json
+    options:
+      annotations:
+        grafana_folder: Homelab
   # From Rook v1.18.8 (deploy/examples/monitoring/grafana), unmodified.
   - name: dashboard-ceph
     files:

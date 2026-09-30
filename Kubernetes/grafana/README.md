@@ -43,6 +43,7 @@ Grafana's volume, so export it into `dashboards/` to keep it.
 | Folder | Dashboard | Source |
 |---|---|---|
 | Homelab | Homelab overview: nodes, Ceph, Argo CD sync, alerts | `dashboards/homelab-overview.py` generates the JSON |
+| Homelab | Kubernetes Dashboard: resource counts, requests vs limits, per-namespace CPU/memory, throttling, restarts | `dashboards/kubernetes-overview.json` |
 | Ceph | Ceph Cluster, Ceph - OSD (Single), Ceph - Pools | Rook v1.18.8 `deploy/examples/monitoring/grafana` |
 | General | ~28 Kubernetes and node dashboards | this chart |
 
