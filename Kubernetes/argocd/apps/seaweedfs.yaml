@@ -18,6 +18,9 @@ spec:
     directory:
       include: 'seaweedfs.yaml'
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
     syncOptions:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true

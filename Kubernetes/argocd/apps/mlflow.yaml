@@ -18,6 +18,9 @@ spec:
     directory:
       include: '{namespace.yaml,postgres.yaml,mlflow.yaml}'
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
     syncOptions:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true

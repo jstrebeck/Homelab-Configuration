@@ -18,6 +18,9 @@ spec:
     directory:
       include: 'namespace.yaml'
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
     syncOptions:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true
@@ -41,6 +44,9 @@ spec:
     directory:
       include: 'postgres.yaml'
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
     syncOptions:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true
@@ -64,5 +70,8 @@ spec:
     targetRevision: main
     path: deploy/overlays/homelab
   syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - RespectIgnoreDifferences=true

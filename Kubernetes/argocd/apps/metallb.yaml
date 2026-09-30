@@ -16,6 +16,9 @@ spec:
     targetRevision: main
     path: Kubernetes/metallb
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true

@@ -23,6 +23,9 @@ spec:
       targetRevision: main
       ref: values
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true

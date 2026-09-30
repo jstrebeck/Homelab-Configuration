@@ -45,6 +45,17 @@ Rook-Ceph, monitoring and cert-manager, KServe, then the workloads.
   component, not inline in the `Application`.
 - **Release names match the original `helm install`** so Argo CD adopted the
   existing resources in place instead of recreating them.
+- **Automated sync, manual prune.** Every app syncs on merge. Pruning is
+  never automatic for platform apps: a removed file shows up as "requires
+  pruning" and is deleted with `argocd app sync <app> --prune` after a look,
+  so a bad commit can't take CRDs, namespaces or PVCs (and their data) with it.
+  The exception is `payments-fraud-detection`, which prunes its own resources
+  per that repo's ADR-0008.
+- **Self-heal** is on for components that only change through Git (Argo CD,
+  MetalLB, Rook-Ceph, monitoring, registry, cloudflared). It is off for the ML
+  stack (cert-manager, KServe, SeaweedFS, MLflow, fraud) while that is still
+  being built out with `kubectl`/`helm`; switch it on once those READMEs say
+  "merge to deploy".
 - **No `resources-finalizer`.** Deleting an `Application` leaves its resources
   running; nothing is cascade-deleted by accident.
 - **One-off Jobs stay out.** e.g. `mlflow/migrate-artifacts-job.yaml` and

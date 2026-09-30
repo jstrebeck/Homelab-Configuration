@@ -18,6 +18,9 @@ spec:
     directory:
       include: 'registry.yaml'
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true

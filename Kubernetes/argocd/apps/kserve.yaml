@@ -18,6 +18,9 @@ spec:
     helm:
       releaseName: kserve-crd
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
     syncOptions:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true
@@ -53,6 +56,9 @@ spec:
       jsonPointers:
         - /metadata/labels/app.kubernetes.io~1managed-by
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
     syncOptions:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true
@@ -81,6 +87,9 @@ spec:
       targetRevision: main
       ref: values
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
     syncOptions:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true

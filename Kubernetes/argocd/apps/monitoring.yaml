@@ -35,6 +35,9 @@ spec:
       jsonPointers:
         - /spec/template/metadata/annotations/checksum~1secret
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
     # node-exporter needs hostNetwork, hostPID and hostPath; the default
     # baseline Pod Security level blocks it.
     managedNamespaceMetadata:
