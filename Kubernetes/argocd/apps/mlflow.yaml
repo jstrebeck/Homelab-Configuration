@@ -1,0 +1,23 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mlflow
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mlops
+  source:
+    repoURL: https://github.com/jstrebeck/Homelab-Configuration.git
+    targetRevision: main
+    path: Kubernetes/mlflow
+    directory:
+      include: '{namespace.yaml,postgres.yaml,mlflow.yaml}'
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true

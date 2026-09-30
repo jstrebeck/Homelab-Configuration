@@ -1,0 +1,4 @@
+# Values for the rook-ceph-cluster chart (https://charts.rook.io/release).
+# Chart defaults: 3 mons, OSDs on every node's empty disks, and the
+# ceph-block (default StorageClass), ceph-filesystem and ceph-objectstore pools.
+operatorNamespace: rook-ceph

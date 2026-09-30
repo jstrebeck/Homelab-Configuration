@@ -1,0 +1,80 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kserve-crd
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-4"
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kserve
+  source:
+    repoURL: ghcr.io/kserve/charts
+    chart: kserve-crd
+    targetRevision: v0.20.0
+    helm:
+      releaseName: kserve-crd
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+      - ServerSideApply=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kserve
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-3"
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kserve
+  sources:
+    - repoURL: ghcr.io/kserve/charts
+      chart: kserve-resources
+      targetRevision: v0.20.0
+      helm:
+        releaseName: kserve
+        valueFiles:
+          - $values/Kubernetes/kserve/values.yaml
+    - repoURL: https://github.com/jstrebeck/Homelab-Configuration.git
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kserve-runtimes
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kserve
+  sources:
+    - repoURL: ghcr.io/kserve/charts
+      chart: kserve-runtime-configs
+      targetRevision: v0.20.0
+      helm:
+        releaseName: kserve-runtimes
+        valueFiles:
+          - $values/Kubernetes/kserve/runtime-values.yaml
+    - repoURL: https://github.com/jstrebeck/Homelab-Configuration.git
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true

@@ -1,0 +1,68 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fraud-platform
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fraud
+  source:
+    repoURL: https://github.com/jstrebeck/Homelab-Configuration.git
+    targetRevision: main
+    path: Kubernetes/fraud
+    directory:
+      include: 'namespace.yaml'
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payments-postgres
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fraud
+  source:
+    repoURL: https://github.com/jstrebeck/Homelab-Configuration.git
+    targetRevision: main
+    path: Kubernetes/databases/payments
+    directory:
+      include: 'postgres.yaml'
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+---
+# Workloads owned by the payments-fraud-detection repo (its ADR-0008). Its CI
+# bumps image tags in deploy/overlays/homelab; Argo CD rolls them out.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payments-fraud-detection
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: fraud
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fraud
+  source:
+    repoURL: https://github.com/jstrebeck/payments-fraud-detection.git
+    targetRevision: main
+    path: deploy/overlays/homelab
+  syncPolicy:
+    syncOptions:
+      - RespectIgnoreDifferences=true

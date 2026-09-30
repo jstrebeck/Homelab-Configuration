@@ -1,0 +1,7 @@
+# Values for the rook-ceph operator chart (https://charts.rook.io/release).
+# Talos control-plane node carries the NoSchedule taint; the operator is allowed
+# there to help with scheduling on a 4-node cluster.
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule

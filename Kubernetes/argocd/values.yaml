@@ -1,0 +1,103 @@
+# Values for oci://ghcr.io/argoproj/argo-helm/argo-cd.
+# Single-replica, no SSO (local admin), plain HTTP on the LAN like every other
+# homelab UI. Argo CD manages its own release after bootstrap (apps/argocd.yaml).
+
+global:
+  domain: 192.168.2.217
+
+configs:
+  params:
+    # TLS terminates nowhere; the UI is LAN-only on a MetalLB IP.
+    server.insecure: true
+
+  cm:
+    # Annotation tracking (the Argo CD 3.x default, pinned here so it's explicit)
+    # leaves `app.kubernetes.io/instance` alone for Helm charts that use it in
+    # selectors, and lets Argo CD adopt resources created by kubectl/helm.
+    application.resourceTrackingMethod: annotation
+
+    # Fields that controllers fill in at runtime. Without these every app with a
+    # webhook or conversion CRD shows OutOfSync forever.
+    resource.customizations.ignoreDifferences.admissionregistration.k8s.io_MutatingWebhookConfiguration: |
+      jqPathExpressions:
+        - '.webhooks[]?.clientConfig.caBundle'
+    resource.customizations.ignoreDifferences.admissionregistration.k8s.io_ValidatingWebhookConfiguration: |
+      jqPathExpressions:
+        - '.webhooks[]?.clientConfig.caBundle'
+    resource.customizations.ignoreDifferences.apiextensions.k8s.io_CustomResourceDefinition: |
+      jsonPointers:
+        - /spec/conversion/webhook/clientConfig/caBundle
+
+  # Helm charts published to OCI registries. Public, so no credentials; the
+  # entries only tell Argo CD to speak OCI to these hosts.
+  repositories:
+    kserve-charts:
+      name: kserve
+      type: helm
+      url: ghcr.io/kserve/charts
+      enableOCI: "true"
+    jetstack-charts:
+      name: jetstack
+      type: helm
+      url: quay.io/jetstack/charts
+      enableOCI: "true"
+    argo-charts:
+      name: argo
+      type: helm
+      url: ghcr.io/argoproj/argo-helm
+      enableOCI: "true"
+
+dex:
+  enabled: false
+
+server:
+  service:
+    type: LoadBalancer
+    annotations:
+      metallb.universe.tf/loadBalancerIPs: 192.168.2.217
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
+
+controller:
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+repoServer:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+
+applicationSet:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      memory: 128Mi
+
+notifications:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 128Mi
+
+redis:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 128Mi

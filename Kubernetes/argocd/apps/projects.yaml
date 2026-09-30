@@ -1,0 +1,45 @@
+# platform: everything this repo installs. Cluster-scoped resources allowed.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: platform
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  description: Cluster platform components defined in Homelab-Configuration
+  sourceRepos:
+    - https://github.com/jstrebeck/Homelab-Configuration.git
+    - https://charts.rook.io/release
+    - https://prometheus-community.github.io/helm-charts
+    - ghcr.io/kserve/charts
+    - quay.io/jetstack/charts
+    - ghcr.io/argoproj/argo-helm
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: "*"
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+---
+# fraud: workloads from the payments-fraud-detection repo, confined to the
+# fraud namespace. Platform pieces it needs (namespace, Postgres, S3 access)
+# come from this repo via the platform project.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: fraud
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  description: payments-fraud-detection workloads
+  sourceRepos:
+    - https://github.com/jstrebeck/payments-fraud-detection.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: fraud
+  clusterResourceWhitelist:
+    # The app's kustomize base also declares the fraud Namespace.
+    - group: ""
+      kind: Namespace
