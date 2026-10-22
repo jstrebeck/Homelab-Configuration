@@ -131,16 +131,16 @@ y += 12
 panels.append(row("Configuration, RBAC and secrets", y)); y += 1
 panels += [
     table("Misconfigurations by resource",
-          [(f'sum by (namespace, resource_kind, resource_name) (trivy_resource_configaudits{{severity="{s}"}})', s)
+          [(f'sum by (namespace, resource_kind, resource_name) (trivy_resource_configaudits{{severity="{s}"}}) > 0', s)
            for s in ("Critical", "High", "Medium")],
           0, y, 12, ["namespace", "resource_kind", "resource_name", "Critical", "High", "Medium"],
           rename={"resource_kind": "kind", "resource_name": "name"},
           sort="Critical", colored=[("Critical", BAD), ("High", WARN)],
-          desc="Config-audit findings per resource (running as root, no limits, writable root FS, ...). "
+          desc="Resources with config-audit findings (running as root, no limits, writable root FS, ...). "
                "kubectl get configauditreports -A for details."),
     table("RBAC findings by role",
-          [('sum by (namespace, resource_kind, resource_name) (trivy_role_rbacassessments{severity=~"Critical|High"})'
-            ' or sum by (resource_kind, resource_name) (trivy_clusterrole_clusterrbacassessments{severity=~"Critical|High"})',
+          [('sum by (namespace, resource_kind, resource_name) (trivy_role_rbacassessments{severity=~"Critical|High"}) > 0'
+            ' or sum by (resource_kind, resource_name) (trivy_clusterrole_clusterrbacassessments{severity=~"Critical|High"}) > 0',
             "critical + high")],
           12, y, 12, ["namespace", "resource_kind", "resource_name", "critical + high"],
           rename={"resource_kind": "kind", "resource_name": "name"}, colored=[("critical + high", WARN)],

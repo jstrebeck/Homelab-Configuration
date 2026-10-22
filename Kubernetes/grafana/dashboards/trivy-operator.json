@@ -785,7 +785,7 @@
     {
       "type": "table",
       "title": "Misconfigurations by resource",
-      "description": "Config-audit findings per resource (running as root, no limits, writable root FS, ...). kubectl get configauditreports -A for details.",
+      "description": "Resources with config-audit findings (running as root, no limits, writable root FS, ...). kubectl get configauditreports -A for details.",
       "id": 13,
       "datasource": {
         "type": "prometheus",
@@ -800,19 +800,19 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (namespace, resource_kind, resource_name) (trivy_resource_configaudits{severity=\"Critical\"})",
+          "expr": "sum by (namespace, resource_kind, resource_name) (trivy_resource_configaudits{severity=\"Critical\"}) > 0",
           "instant": true,
           "format": "table"
         },
         {
           "refId": "B",
-          "expr": "sum by (namespace, resource_kind, resource_name) (trivy_resource_configaudits{severity=\"High\"})",
+          "expr": "sum by (namespace, resource_kind, resource_name) (trivy_resource_configaudits{severity=\"High\"}) > 0",
           "instant": true,
           "format": "table"
         },
         {
           "refId": "C",
-          "expr": "sum by (namespace, resource_kind, resource_name) (trivy_resource_configaudits{severity=\"Medium\"})",
+          "expr": "sum by (namespace, resource_kind, resource_name) (trivy_resource_configaudits{severity=\"Medium\"}) > 0",
           "instant": true,
           "format": "table"
         }
@@ -954,7 +954,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (namespace, resource_kind, resource_name) (trivy_role_rbacassessments{severity=~\"Critical|High\"}) or sum by (resource_kind, resource_name) (trivy_clusterrole_clusterrbacassessments{severity=~\"Critical|High\"})",
+          "expr": "sum by (namespace, resource_kind, resource_name) (trivy_role_rbacassessments{severity=~\"Critical|High\"}) > 0 or sum by (resource_kind, resource_name) (trivy_clusterrole_clusterrbacassessments{severity=~\"Critical|High\"}) > 0",
           "instant": true,
           "format": "table"
         }
