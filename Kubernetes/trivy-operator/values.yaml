@@ -1,0 +1,43 @@
+# Trivy Operator: continuous vulnerability, misconfiguration, exposed-secret
+# and RBAC scanning of everything running in the cluster. See README.md.
+
+operator:
+  # One Trivy server holds the vulnerability DB on a PVC; scan jobs run as
+  # thin clients instead of each downloading the ~1 GB DB.
+  builtInTrivyServer: true
+  # 57 images across 4 nodes; a few at a time keeps the first full pass gentle.
+  scanJobsConcurrentLimit: 3
+  # The node-collector reads kubelet/etcd files from the host over hostPath.
+  # Talos has none of the paths the CIS checks expect, so the results would be
+  # all failures. Node hardening is Talos's job (ADR-0001).
+  infraAssessmentScannerEnabled: false
+  # One series per CVE per image, so the dashboard can list the CVEs.
+  metricsVulnIdEnabled: true
+
+serviceMonitor:
+  enabled: true
+
+trivy:
+  # The in-cluster registry is plain HTTP (see ../registry/talos-patch.yaml).
+  # Scan jobs pull images themselves, so they need to be told too.
+  nonSslRegistries:
+    homelab: 192.168.2.203:5000
+  insecureRegistries:
+    homelab: 192.168.2.203:5000
+  storageClassName: ceph-block
+  storageSize: 5Gi
+
+compliance:
+  # k8s-cis-1.23 is left out: most of its controls are node checks
+  # (see infraAssessmentScannerEnabled above).
+  specs:
+    - k8s-nsa-1.0
+    - k8s-pss-baseline-0.1
+    - k8s-pss-restricted-0.1
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    memory: 512Mi

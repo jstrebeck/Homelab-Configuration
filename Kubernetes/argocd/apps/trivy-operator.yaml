@@ -1,0 +1,41 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trivy-operator
+  namespace: argocd
+  annotations:
+    # After monitoring (-5): the chart ships a ServiceMonitor.
+    argocd.argoproj.io/sync-wave: "-4"
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: trivy-system
+  sources:
+    - repoURL: https://aquasecurity.github.io/helm-charts
+      chart: trivy-operator
+      targetRevision: 0.37.0
+      helm:
+        releaseName: trivy-operator
+        valueFiles:
+          - $values/Kubernetes/trivy-operator/values.yaml
+    - repoURL: https://github.com/jstrebeck/Homelab-Configuration.git
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    # Scan jobs and the Trivy server run as non-root with no host access, so
+    # baseline is enough (the node-collector, which needs hostPath, is off).
+    managedNamespaceMetadata:
+      labels:
+        pod-security.kubernetes.io/enforce: baseline
+        pod-security.kubernetes.io/audit: restricted
+        pod-security.kubernetes.io/warn: restricted
+    syncOptions:
+      - CreateNamespace=true
+      # The report CRDs exceed the size limit of the annotation that
+      # client-side apply stores.
+      - ServerSideApply=true

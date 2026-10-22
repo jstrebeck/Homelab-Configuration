@@ -16,3 +16,4 @@ new ADR that supersedes the old one and link both ways. Copy
 | [0008](0008-kserve-standard-mode.md) | KServe in Standard (raw Deployment) mode | Accepted |
 | [0009](0009-one-postgres-per-consumer.md) | One PostgreSQL instance per consumer, no operator | Accepted |
 | [0010](0010-platform-and-workload-repos.md) | Platform lives here, workloads live in their own repos | Accepted |
+| [0011](0011-trivy-operator-scanning.md) | Trivy Operator for in-cluster security scanning | Accepted |

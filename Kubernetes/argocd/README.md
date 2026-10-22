@@ -25,6 +25,7 @@ argocd/
     monitoring.yaml    kube-prometheus-stack (values in ../grafana/) and the
                        grafana-dashboards app (../grafana/dashboards/)
     cert-manager.yaml  values in ../cert-manager/
+    trivy-operator.yaml values in ../trivy-operator/
     kserve.yaml        kserve-crd, kserve, kserve-runtimes, kserve-mlflow-initializer
     seaweedfs.yaml     ../seaweedfs/seaweedfs.yaml
     mlflow.yaml        ../mlflow/ (namespace, postgres, server)
@@ -53,8 +54,8 @@ Rook-Ceph, monitoring and cert-manager, KServe, then the workloads.
   The exception is `payments-fraud-detection`, which prunes its own resources
   per that repo's ADR-0008.
 - **Self-heal** is on for components that only change through Git (Argo CD,
-  MetalLB, Rook-Ceph, monitoring, registry, cloudflared). It is off for the ML
-  stack (cert-manager, KServe, SeaweedFS, MLflow, fraud) while that is still
+  MetalLB, Rook-Ceph, monitoring, Trivy Operator, registry, cloudflared). It
+  is off for the ML stack (cert-manager, KServe, SeaweedFS, MLflow, fraud) while that is still
   being built out with `kubectl`/`helm`; switch it on once those READMEs say
   "merge to deploy".
 - **No `resources-finalizer`.** Deleting an `Application` leaves its resources

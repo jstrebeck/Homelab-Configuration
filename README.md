@@ -26,6 +26,7 @@ flowchart LR
       metallb[MetalLB<br/>L2 load balancer]
       ceph[Rook-Ceph<br/>block · file · object]
       obs[Prometheus · Grafana<br/>Alertmanager]
+      trivy[Trivy Operator<br/>security scanning]
       certm[cert-manager]
       reg[Container registry]
       cfd[cloudflared]
@@ -78,6 +79,7 @@ flowchart LR
 | [MetalLB](Kubernetes/metallb/) | `metallb-system` | Bare-metal `LoadBalancer` IPs | Upstream manifest v0.14.5 + kustomize |
 | [Rook-Ceph](Kubernetes/ceph-rook/) | `rook-ceph` | Distributed block, file and object storage | Helm `rook-ceph` + `rook-ceph-cluster` v1.18.8 |
 | [kube-prometheus-stack](Kubernetes/grafana/) | `monitoring` | Prometheus, Alertmanager, Grafana, node-exporter; dashboards from Git | Helm 81.0.0 + kustomize |
+| [Trivy Operator](Kubernetes/trivy-operator/) | `trivy-system` | Vulnerability, misconfiguration, RBAC and exposed-secret scanning of running workloads | Helm `trivy-operator` 0.37.0 |
 | [cert-manager](Kubernetes/cert-manager/) | `cert-manager` | Webhook certificates (KServe) | Helm v1.21.2 |
 | [KServe](Kubernetes/kserve/) | `kserve` | Model serving in Standard (raw Deployment) mode | Helm v0.20.0 (CRDs, controller, runtimes) |
 | [SeaweedFS](Kubernetes/seaweedfs/) | `seaweedfs` | S3-compatible object store for ML artifacts | Manifest |
@@ -97,6 +99,7 @@ flowchart LR
     ceph[Ceph mgr + exporter]
     argo[Argo CD controller]
     apps[Workload ServiceMonitors<br/>SeaweedFS · payments API · model server]
+    trivy[Trivy Operator<br/>CVEs · misconfigs]
   end
   sources -- scrape --> prom[(Prometheus<br/>7 d on Ceph)]
   prom --> graf[Grafana<br/>dashboards from Git]
@@ -118,6 +121,8 @@ loaded by Grafana's sidecar without a restart:
   workloads missing replicas.
 - **Kubernetes:** object counts, CPU and memory requests and limits against
   capacity, per-namespace and per-node usage, CPU throttling and restarts.
+- **Trivy Operator:** CVEs per running image (critical, high, fixable),
+  misconfigurations, risky RBAC and secrets found in images.
 - **Ceph:** cluster, per-OSD and per-pool dashboards maintained by Rook.
 - The chart's standard cluster, node, namespace and workload dashboards.
 

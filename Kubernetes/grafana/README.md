@@ -27,6 +27,7 @@ Prometheus selects every `ServiceMonitor`, `PodMonitor`, `Probe` and
 | Ceph mgr + exporter, and Rook's Ceph alert rules | `../ceph-rook/values-*.yaml` (`monitoring.enabled`) |
 | Argo CD controller, server, repo server | `../argocd/values.yaml` |
 | SeaweedFS | `../seaweedfs/seaweedfs.yaml` |
+| Trivy Operator (CVE, config-audit, RBAC and secret findings) | `../trivy-operator/values.yaml` |
 | payments-fraud-detection | that repo's `deploy/` |
 
 The controller manager, scheduler and kube-proxy are not scraped: Talos binds
@@ -44,6 +45,7 @@ Grafana's volume, so export it into `dashboards/` to keep it.
 |---|---|---|
 | Homelab | Homelab overview: nodes, Ceph, Argo CD sync, alerts | `dashboards/homelab-overview.py` generates the JSON |
 | Homelab | Kubernetes Dashboard: resource counts, requests vs limits, per-namespace CPU/memory, throttling, restarts | `dashboards/kubernetes-overview.json` |
+| Security | Trivy Operator: CVEs per image, fixable criticals, misconfigurations, RBAC, exposed secrets | `dashboards/trivy-operator.py` generates the JSON |
 | Ceph | Ceph Cluster, Ceph - OSD (Single), Ceph - Pools | Rook v1.18.8 `deploy/examples/monitoring/grafana` |
 | General | ~28 Kubernetes and node dashboards | this chart |
 
