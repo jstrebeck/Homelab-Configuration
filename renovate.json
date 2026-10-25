@@ -18,6 +18,14 @@
       "matchStrings": ["metallb/metallb/(?<currentValue>v[\\d.]+)/config"],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "metallb/metallb"
+    },
+    {
+      "customType": "regex",
+      "description": "metrics-server upstream manifest pinned by URL",
+      "managerFilePatterns": ["/^Kubernetes/metrics-server/kustomization\\.yaml$/"],
+      "matchStrings": ["metrics-server/releases/download/(?<currentValue>v[\\d.]+)/components"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "kubernetes-sigs/metrics-server"
     }
   ],
   "packageRules": [

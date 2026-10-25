@@ -21,6 +21,7 @@ argocd/
     projects.yaml      AppProjects: platform (this repo), fraud (payments-fraud-detection)
     argocd.yaml        Argo CD itself
     metallb.yaml       upstream native manifest + ../metallb/metallb.yaml (kustomize)
+    metrics-server.yaml upstream manifest + insecure-TLS patch (../metrics-server/)
     rook-ceph.yaml     operator + cluster charts, values in ../ceph-rook/
     monitoring.yaml    kube-prometheus-stack (values in ../grafana/) and the
                        grafana-dashboards app (../grafana/dashboards/)
@@ -54,10 +55,10 @@ Rook-Ceph, monitoring and cert-manager, KServe, then the workloads.
   The exception is `payments-fraud-detection`, which prunes its own resources
   per that repo's ADR-0008.
 - **Self-heal** is on for components that only change through Git (Argo CD,
-  MetalLB, Rook-Ceph, monitoring, Trivy Operator, registry, cloudflared). It
-  is off for the ML stack (cert-manager, KServe, SeaweedFS, MLflow, fraud) while that is still
-  being built out with `kubectl`/`helm`; switch it on once those READMEs say
-  "merge to deploy".
+  MetalLB, metrics-server, Rook-Ceph, monitoring, Trivy Operator, registry,
+  cloudflared). It is off for the ML stack (cert-manager, KServe, SeaweedFS,
+  MLflow, fraud) while that is still being built out with `kubectl`/`helm`;
+  switch it on once those READMEs say "merge to deploy".
 - **No `resources-finalizer`.** Deleting an `Application` leaves its resources
   running; nothing is cascade-deleted by accident.
 - **One-off Jobs stay out.** e.g. `mlflow/migrate-artifacts-job.yaml` and
