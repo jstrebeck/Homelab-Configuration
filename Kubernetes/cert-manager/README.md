@@ -11,7 +11,7 @@ This is not used for ingress TLS. No ClusterIssuer, no ACME, no public certs.
 Services stay plain HTTP inside the homelab.
 
 - **Namespace:** `cert-manager`
-- **Chart:** `oci://quay.io/jetstack/charts/cert-manager` `v1.21.2`
+- **Chart:** `oci://quay.io/jetstack/charts/cert-manager` `v1.21.3`
 - **Values:** `values.yaml` (CRDs managed by Helm and kept on uninstall,
   small resource requests)
 
@@ -19,7 +19,7 @@ Services stay plain HTTP inside the homelab.
 
 ```
 helm install cert-manager oci://quay.io/jetstack/charts/cert-manager \
-  --version v1.21.2 \
+  --version v1.21.3 \
   --namespace cert-manager --create-namespace \
   -f values.yaml
 kubectl -n cert-manager rollout status deploy/cert-manager-webhook

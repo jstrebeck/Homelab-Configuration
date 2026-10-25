@@ -80,7 +80,7 @@ flowchart LR
 | [Rook-Ceph](Kubernetes/ceph-rook/) | `rook-ceph` | Distributed block, file and object storage | Helm `rook-ceph` + `rook-ceph-cluster` v1.18.8 |
 | [kube-prometheus-stack](Kubernetes/grafana/) | `monitoring` | Prometheus, Alertmanager, Grafana, node-exporter; dashboards from Git | Helm 81.0.0 + kustomize |
 | [Trivy Operator](Kubernetes/trivy-operator/) | `trivy-system` | Vulnerability, misconfiguration, RBAC and exposed-secret scanning of running workloads | Helm `trivy-operator` 0.37.0 |
-| [cert-manager](Kubernetes/cert-manager/) | `cert-manager` | Webhook certificates (KServe) | Helm v1.21.2 |
+| [cert-manager](Kubernetes/cert-manager/) | `cert-manager` | Webhook certificates (KServe) | Helm v1.21.3 |
 | [KServe](Kubernetes/kserve/) | `kserve` | Model serving in Standard (raw Deployment) mode | Helm v0.20.0 (CRDs, controller, runtimes) |
 | [SeaweedFS](Kubernetes/seaweedfs/) | `seaweedfs` | S3-compatible object store for ML artifacts | Manifest |
 | [MLflow](Kubernetes/mlflow/) | `mlops` | Experiment tracking and model registry | Manifest, custom image |
