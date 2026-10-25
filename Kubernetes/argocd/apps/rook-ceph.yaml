@@ -14,7 +14,7 @@ spec:
   sources:
     - repoURL: https://charts.rook.io/release
       chart: rook-ceph
-      targetRevision: v1.18.8
+      targetRevision: v1.18.11
       helm:
         releaseName: rook-ceph
         valueFiles:
@@ -54,7 +54,7 @@ spec:
   sources:
     - repoURL: https://charts.rook.io/release
       chart: rook-ceph-cluster
-      targetRevision: v1.18.8
+      targetRevision: v1.18.11
       helm:
         releaseName: rook-ceph-cluster
         valueFiles:
