@@ -79,7 +79,7 @@ flowchart LR
 | [MetalLB](Kubernetes/metallb/) | `metallb-system` | Bare-metal `LoadBalancer` IPs | Upstream manifest v0.16.1 + kustomize |
 | [metrics-server](Kubernetes/metrics-server/) | `kube-system` | `metrics.k8s.io` API for `kubectl top` and HPAs | Upstream manifest v0.9.0 + kustomize |
 | [Rook-Ceph](Kubernetes/ceph-rook/) | `rook-ceph` | Distributed block, file and object storage | Helm `rook-ceph` + `rook-ceph-cluster` v1.18.11 |
-| [kube-prometheus-stack](Kubernetes/grafana/) | `monitoring` | Prometheus, Alertmanager, Grafana, node-exporter; dashboards from Git | Helm 81.6.9 + kustomize |
+| [kube-prometheus-stack](Kubernetes/grafana/) | `monitoring` | Prometheus, Alertmanager, Grafana, node-exporter; dashboards from Git | Helm 92.13.1 + kustomize |
 | [Trivy Operator](Kubernetes/trivy-operator/) | `trivy-system` | Vulnerability, misconfiguration, RBAC and exposed-secret scanning of running workloads | Helm `trivy-operator` 0.37.0 |
 | [cert-manager](Kubernetes/cert-manager/) | `cert-manager` | Webhook certificates (KServe) | Helm v1.21.3 |
 | [KServe](Kubernetes/kserve/) | `kserve` | Model serving in Standard (raw Deployment) mode | Helm v0.20.0 (CRDs, controller, runtimes) |
