@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: cloudflared
-        image: cloudflare/cloudflared:latest # Use a specific version for stability
+        image: cloudflare/cloudflared:2026.10.3
         args:
         - tunnel
         - --no-autoupdate
