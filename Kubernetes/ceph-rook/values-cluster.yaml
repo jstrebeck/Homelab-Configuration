@@ -15,9 +15,34 @@ monitoring:
 # chart default so a Rook upgrade never changes Ceph in the same step.
 cephImage:
   repository: quay.io/ceph/ceph
-  tag: v19.2.5
+  tag: v19.2.7
 
 cephClusterSpec:
+  # CVE-2025-30156: rotate the core daemon keys (mon, mgr, OSD, and the MDS
+  # and RGW daemons of the filesystem and object store) to the AES256K type.
+  # Raise keyGeneration to rotate again. CSI keys stay on aes (the chart
+  # default) because AES256K kernel mounts need Linux 7.0+ and Talos 1.11
+  # runs 6.12. See README.md.
+  security:
+    cephx:
+      daemon:
+        keyRotationPolicy: KeyGeneration
+        keyGeneration: 2
+
+  # Warnings Ceph raises while any client key is still aes. CSI keys must stay
+  # aes until the nodes run kernel 7.0+, so mute them rather than live with a
+  # permanent HEALTH_WARN; unmute after migrating CSI keys to aes256k.
+  healthCheck:
+    muteHealthWarning:
+      AUTH_INSECURE_ROTATING_SERVICE_KEY_TYPE:
+        policy: mute
+      AUTH_INSECURE_CLIENT_KEY_TYPE:
+        policy: mute
+      AUTH_INSECURE_KEYS_ALLOWED:
+        policy: mute
+      AUTH_INSECURE_KEYS_CREATABLE:
+        policy: mute
+
   mgr:
     # The chart's default is an empty key, which renders as null and fails
     # schema validation. Same meaning: no extra mgr modules.
