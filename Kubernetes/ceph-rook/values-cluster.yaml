@@ -10,12 +10,14 @@ monitoring:
   enabled: true
   createPrometheusRules: true
 
-cephClusterSpec:
-  # Pinned for the CVE-2025-30156 upgrade path from Rook v1.18 (rook/rook#18203):
-  # v19.2.5 here, then Rook v1.19.10+, then v19.2.6+ with CephX key rotation.
-  cephVersion:
-    image: quay.io/ceph/ceph:v19.2.5
+# Ceph image. Since Rook v1.19 the chart sets cephClusterSpec.cephVersion from
+# these values, so don't set cephVersion below. Pinned rather than following the
+# chart default so a Rook upgrade never changes Ceph in the same step.
+cephImage:
+  repository: quay.io/ceph/ceph
+  tag: v19.2.5
 
+cephClusterSpec:
   mgr:
     # The chart's default is an empty key, which renders as null and fails
     # schema validation. Same meaning: no extra mgr modules.
