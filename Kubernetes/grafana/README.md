@@ -5,7 +5,7 @@ the [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/
 chart, plus the dashboards in `dashboards/`.
 
 - **Namespace:** `monitoring`
-- **Chart:** `kube-prometheus-stack` `81.0.0`, values in `values.yaml`
+- **Chart:** `kube-prometheus-stack` `81.6.9`, values in `values.yaml`
 - **Delivered by:** Argo CD, `../argocd/apps/monitoring.yaml` (apps
   `kube-prometheus-stack` and `grafana-dashboards`)
 - **Grafana:** http://192.168.2.204 (MetalLB), 10Gi `ceph-block` volume
@@ -67,7 +67,7 @@ kubectl -n monitoring get secret kube-prometheus-stack-grafana \
 
 ```
 helm install kube-prometheus-stack kube-prometheus-stack \
-  --repo https://prometheus-community.github.io/helm-charts --version 81.0.0 \
+  --repo https://prometheus-community.github.io/helm-charts --version 81.6.9 \
   -n monitoring --create-namespace -f values.yaml
 kubectl label namespace monitoring pod-security.kubernetes.io/enforce=privileged
 kubectl apply -k dashboards/
