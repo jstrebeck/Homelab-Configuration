@@ -26,6 +26,9 @@ metadata:
   namespace: registry
 spec:
   replicas: 1
+  # The data volume is ReadWriteOnce: stop the old pod before starting the new.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: registry
@@ -36,7 +39,7 @@ spec:
     spec:
       containers:
       - name: registry
-        image: registry:2
+        image: registry:3.1.2
         ports:
         - containerPort: 5000
         volumeMounts:
