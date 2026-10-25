@@ -6,7 +6,7 @@ the cluster is declared here as an Argo CD `Application`; a change merged to
 
 - **UI:** http://192.168.2.217 (MetalLB), user `admin`
 - **Namespace:** `argocd`
-- **Chart:** `oci://ghcr.io/argoproj/argo-helm/argo-cd` `10.9.4` (Argo CD v3.5.3), values in `values.yaml`
+- **Chart:** `oci://ghcr.io/argoproj/argo-helm/argo-cd` `10.11.1` (Argo CD v3.5.6), values in `values.yaml`
 - **Pattern:** app of apps. `root.yaml` is applied once by hand and points at
   `apps/`; every file in `apps/` is one or more `Application`s. Argo CD also
   manages its own Helm release (`apps/argocd.yaml`).
@@ -67,7 +67,7 @@ Rook-Ceph, monitoring and cert-manager, KServe, then the workloads.
 
 ```
 helm install argocd oci://ghcr.io/argoproj/argo-helm/argo-cd \
-  --version 10.9.4 --namespace argocd --create-namespace -f values.yaml
+  --version 10.11.1 --namespace argocd --create-namespace -f values.yaml
 kubectl apply -f root.yaml
 ```
 

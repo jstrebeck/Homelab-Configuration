@@ -75,7 +75,7 @@ flowchart LR
 
 | Component | Namespace | Purpose | Delivered as |
 |---|---|---|---|
-| [Argo CD](Kubernetes/argocd/) | `argocd` | GitOps controller, manages itself | Helm `argo-cd` 10.9.4 |
+| [Argo CD](Kubernetes/argocd/) | `argocd` | GitOps controller, manages itself | Helm `argo-cd` 10.11.1 |
 | [MetalLB](Kubernetes/metallb/) | `metallb-system` | Bare-metal `LoadBalancer` IPs | Upstream manifest v0.14.5 + kustomize |
 | [Rook-Ceph](Kubernetes/ceph-rook/) | `rook-ceph` | Distributed block, file and object storage | Helm `rook-ceph` + `rook-ceph-cluster` v1.18.8 |
 | [kube-prometheus-stack](Kubernetes/grafana/) | `monitoring` | Prometheus, Alertmanager, Grafana, node-exporter; dashboards from Git | Helm 81.0.0 + kustomize |
@@ -202,7 +202,7 @@ it down.
 talosctl patch mc -p @Kubernetes/registry/talos-patch.yaml -n <node-ips>
 
 # 2. Argo CD, then hand it the repo
-helm install argocd oci://ghcr.io/argoproj/argo-helm/argo-cd --version 10.9.4 \
+helm install argocd oci://ghcr.io/argoproj/argo-helm/argo-cd --version 10.11.1 \
   --namespace argocd --create-namespace -f Kubernetes/argocd/values.yaml
 kubectl apply -f Kubernetes/argocd/root.yaml
 
