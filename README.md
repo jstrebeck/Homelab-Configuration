@@ -76,7 +76,7 @@ flowchart LR
 | Component | Namespace | Purpose | Delivered as |
 |---|---|---|---|
 | [Argo CD](Kubernetes/argocd/) | `argocd` | GitOps controller, manages itself | Helm `argo-cd` 10.11.1 |
-| [MetalLB](Kubernetes/metallb/) | `metallb-system` | Bare-metal `LoadBalancer` IPs | Upstream manifest v0.14.5 + kustomize |
+| [MetalLB](Kubernetes/metallb/) | `metallb-system` | Bare-metal `LoadBalancer` IPs | Upstream manifest v0.15.3 + kustomize |
 | [Rook-Ceph](Kubernetes/ceph-rook/) | `rook-ceph` | Distributed block, file and object storage | Helm `rook-ceph` + `rook-ceph-cluster` v1.18.11 |
 | [kube-prometheus-stack](Kubernetes/grafana/) | `monitoring` | Prometheus, Alertmanager, Grafana, node-exporter; dashboards from Git | Helm 81.6.9 + kustomize |
 | [Trivy Operator](Kubernetes/trivy-operator/) | `trivy-system` | Vulnerability, misconfiguration, RBAC and exposed-secret scanning of running workloads | Helm `trivy-operator` 0.37.0 |

@@ -4,7 +4,7 @@
 kubectl create namespace metallb-system
 
 ##Apply MetalLB manifests
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.5/config/manifests/metallb-native.yaml
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.3/config/manifests/metallb-native.yaml
 
 
 ##Verify:
