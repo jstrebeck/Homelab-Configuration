@@ -155,7 +155,9 @@ one or more `Application`s.
   values, kustomize, or a filtered directory) and fails if a path or values
   file is missing.
 - `kubeconform` validates the output against the Kubernetes 1.34 schemas and
-  the CRD schemas (Ceph, Prometheus, cert-manager, KServe, ...).
+  against schemas generated from the CRDs the repo deploys (Ceph, Prometheus,
+  cert-manager, KServe, ...), at the same chart versions; the community CRD
+  catalog covers the rest.
 - `terraform fmt` and a `gitleaks` scan of the full history.
 
 Chart and image versions are kept current by [Renovate](renovate.json), which

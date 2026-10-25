@@ -31,11 +31,23 @@ jobs:
       - name: Render every Application
         run: python scripts/render-apps.py --out rendered --kube-version "$KUBE_VERSION"
 
+      # Custom resources are checked against the CRDs this repo actually deploys
+      # (same chart versions), falling back to the community catalog for CRDs
+      # that come from elsewhere. The catalog alone lags new CRD fields.
+      - name: Generate schemas from the rendered CRDs
+        run: |
+          mkdir schemas && cd schemas
+          curl -sSLO "https://raw.githubusercontent.com/yannh/kubeconform/${KUBECONFORM_VERSION}/scripts/openapi2jsonschema.py"
+          FILENAME_FORMAT='{kind}-{fullgroup}-{version}' python openapi2jsonschema.py ../rendered/*.yaml > /dev/null
+          rm openapi2jsonschema.py
+          ls | wc -l
+
       - name: Validate against Kubernetes and CRD schemas
         run: |
           kubeconform -strict -summary -ignore-missing-schemas \
             -kubernetes-version "$KUBE_VERSION" \
             -schema-location default \
+            -schema-location 'schemas/{{.ResourceKind}}-{{.Group}}-{{.ResourceAPIVersion}}.json' \
             -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
             rendered/*.yaml
 
