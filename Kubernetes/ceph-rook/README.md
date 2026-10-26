@@ -35,10 +35,13 @@ The CSI drivers run under the Ceph CSI operator (`ceph-csi-controller-manager`,
 installed by the `rook-ceph` chart). Since Rook v1.20 the `Driver` and
 `OperatorConfig` CRs, and the drivers' ServiceAccounts and RBAC, come from the
 separate `ceph-csi-drivers` chart (`values-csi-drivers.yaml`, Argo app
-`ceph-csi-drivers`). Since Rook v1.21 the CSI images are the operator's
-built-in defaults, so they move with the operator version. To override them,
-set `csi.*` image values in `values-operator.yaml`; the chart writes them to
-`rook-csi-operator-image-set-configmap`. Rook itself only writes the
+`ceph-csi-drivers`). The CSI images are pinned in `values-operator.yaml`
+(`csi.*`, written to `rook-csi-operator-image-set-configmap`). Since Rook v1.21
+the chart leaves them empty so the operator uses its built-in images, but
+cephcsi v3.18+ needs an x86-64-v3 CPU, which the Proxmox VMs' CPU type
+doesn't provide: the plugin dies with `Fatal glibc error: CPU does not
+support x86-64-v3`. Keep the pins on v3.17.x until the VMs use a v3-capable
+CPU type. Rook itself only writes the
 `CephConnection` and `ClientProfile` CRs. The operator turns all of these into
 the `*-ctrlplugin` Deployments and `*-nodeplugin` DaemonSets. If the operator
 isn't running, the CSI pods silently stay on their old images. Both drivers use

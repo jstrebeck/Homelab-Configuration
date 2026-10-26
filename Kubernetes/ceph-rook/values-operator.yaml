@@ -16,3 +16,30 @@ csi:
   # while its ConfigMap template still renders it, as an empty string, which
   # the operator reads as false.
   createCsiOperatorResources: true
+
+  # CSI images pinned instead of the CSI operator's built-in defaults: from
+  # cephcsi v3.18 the image needs an x86-64-v3 CPU ("Fatal glibc error: CPU
+  # does not support x86-64-v3"), which the Proxmox VMs' CPU type doesn't
+  # provide. This is the set Rook v1.20.9 shipped. Unpin once the VMs use a
+  # v3-capable CPU type (e.g. x86-64-v3 or host).
+  cephcsi:
+    repository: quay.io/cephcsi/cephcsi
+    tag: v3.17.1
+  registrar:
+    repository: registry.k8s.io/sig-storage/csi-node-driver-registrar
+    tag: v2.17.0
+  provisioner:
+    repository: registry.k8s.io/sig-storage/csi-provisioner
+    tag: v6.2.0
+  snapshotter:
+    repository: registry.k8s.io/sig-storage/csi-snapshotter
+    tag: v8.5.0
+  attacher:
+    repository: registry.k8s.io/sig-storage/csi-attacher
+    tag: v4.12.0
+  resizer:
+    repository: registry.k8s.io/sig-storage/csi-resizer
+    tag: v2.1.0
+  csiAddons:
+    repository: quay.io/csiaddons/k8s-sidecar
+    tag: v0.14.0
