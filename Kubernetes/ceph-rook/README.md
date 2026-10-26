@@ -22,6 +22,8 @@ kubectl rollout restart deploy rook-ceph-operator -n rook-ceph
 
 ## Versions
 
+Since v1.21 Rook's chart versions have no `v` prefix (`1.21.0`).
+
 Rook and Ceph are pinned separately (`../argocd/apps/rook-ceph.yaml` for the
 charts, `cephImage` in `values-cluster.yaml` for Ceph) so an upgrade changes
 one of them at a time. Rook upgrades go one minor version at a time; read
@@ -33,7 +35,9 @@ The CSI drivers run under the Ceph CSI operator (`ceph-csi-controller-manager`,
 installed by the `rook-ceph` chart). Since Rook v1.20 the `Driver` and
 `OperatorConfig` CRs, and the drivers' ServiceAccounts and RBAC, come from the
 separate `ceph-csi-drivers` chart (`values-csi-drivers.yaml`, Argo app
-`ceph-csi-drivers`). The CSI images still come from the `rook-ceph` chart, in
+`ceph-csi-drivers`). Since Rook v1.21 the CSI images are the operator's
+built-in defaults, so they move with the operator version. To override them,
+set `csi.*` image values in `values-operator.yaml`; the chart writes them to
 `rook-csi-operator-image-set-configmap`. Rook itself only writes the
 `CephConnection` and `ClientProfile` CRs. The operator turns all of these into
 the `*-ctrlplugin` Deployments and `*-nodeplugin` DaemonSets. If the operator

@@ -9,3 +9,10 @@ tolerations:
 # Lets the operator create the ServiceMonitors for the Ceph cluster.
 monitoring:
   enabled: true
+
+csi:
+  # Rook keeps the CephConnection and ClientProfile CRs the CSI drivers use.
+  # Already the operator's default, but the v1.21.0 chart dropped this value
+  # while its ConfigMap template still renders it, as an empty string, which
+  # the operator reads as false.
+  createCsiOperatorResources: true
