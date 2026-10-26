@@ -11,6 +11,7 @@ spec:
   sourceRepos:
     - https://github.com/jstrebeck/Homelab-Configuration.git
     - https://charts.rook.io/release
+    - https://ceph.github.io/ceph-csi-operator
     - https://prometheus-community.github.io/helm-charts
     - ghcr.io/kserve/charts
     - quay.io/jetstack/charts

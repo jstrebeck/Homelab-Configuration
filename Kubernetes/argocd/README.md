@@ -22,7 +22,8 @@ argocd/
     argocd.yaml        Argo CD itself
     metallb.yaml       upstream native manifest + ../metallb/metallb.yaml (kustomize)
     metrics-server.yaml upstream manifest + insecure-TLS patch (../metrics-server/)
-    rook-ceph.yaml     operator + cluster charts, values in ../ceph-rook/
+    rook-ceph.yaml     operator, CSI drivers and cluster charts, values in
+                       ../ceph-rook/
     monitoring.yaml    kube-prometheus-stack (values in ../grafana/) and the
                        grafana-dashboards app (../grafana/dashboards/)
     cert-manager.yaml  values in ../cert-manager/

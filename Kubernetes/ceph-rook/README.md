@@ -29,17 +29,25 @@ that version's upgrade guide first.
 
 ## CSI
 
-Rook runs the CSI drivers through the Ceph CSI operator
-(`ceph-csi-controller-manager`, `ROOK_USE_CSI_OPERATOR: true`): Rook writes
-`Driver` CRs and the image set in `rook-csi-operator-image-set-configmap`, the
-operator turns them into the `*-ctrlplugin` Deployments and `*-nodeplugin`
-DaemonSets. If the operator isn't running, the CSI pods silently stay on
-their old images through Rook upgrades. Both drivers use kernel clients
-(krbd, kernel CephFS), so restarting node plugins leaves mounted volumes
-alone.
+The CSI drivers run under the Ceph CSI operator (`ceph-csi-controller-manager`,
+installed by the `rook-ceph` chart). Since Rook v1.20 the `Driver` and
+`OperatorConfig` CRs, and the drivers' ServiceAccounts and RBAC, come from the
+separate `ceph-csi-drivers` chart (`values-csi-drivers.yaml`, Argo app
+`ceph-csi-drivers`). The CSI images still come from the `rook-ceph` chart, in
+`rook-csi-operator-image-set-configmap`. Rook itself only writes the
+`CephConnection` and `ClientProfile` CRs. The operator turns all of these into
+the `*-ctrlplugin` Deployments and `*-nodeplugin` DaemonSets. If the operator
+isn't running, the CSI pods silently stay on their old images. Both drivers use
+kernel clients (krbd, kernel CephFS), so restarting node plugins leaves mounted
+volumes alone.
 
-From Rook v1.20 the CSI drivers come from a separate `ceph-csi-drivers` chart,
-installed between the `rook-ceph` and `rook-ceph-cluster` charts.
+Upgrade the charts in this order: `rook-ceph`, `ceph-csi-drivers`,
+`rook-ceph-cluster`. Keep `ceph-csi-drivers` at the `ceph-csi-operator`
+version listed in that Rook release's `rook-ceph` Chart.yaml, and compare
+`values-csi-drivers.yaml` with the release's recommended values
+(`deploy/charts/ceph-csi-drivers/values.yaml`). The driver names must stay
+`rook-ceph.{rbd,cephfs}.csi.ceph.com`, because they are the provisioners in
+the StorageClasses and existing PVs.
 
 ## CephX keys (CVE-2025-30156)
 

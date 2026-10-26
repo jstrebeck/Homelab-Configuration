@@ -35,8 +35,8 @@
       "enabled": false
     },
     {
-      "description": "Operator and cluster charts must move together",
-      "matchPackageNames": ["rook-ceph", "rook-ceph-cluster"],
+      "description": "Operator, cluster and CSI drivers charts must move together (ceph-csi-drivers at the ceph-csi-operator version rook-ceph bundles)",
+      "matchPackageNames": ["rook-ceph", "rook-ceph-cluster", "ceph-csi-drivers"],
       "groupName": "Rook-Ceph"
     },
     {

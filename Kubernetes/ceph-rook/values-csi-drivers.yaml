@@ -1,0 +1,52 @@
+# Values for the ceph-csi-drivers chart (https://ceph.github.io/ceph-csi-operator).
+# Since Rook v1.20 this chart, not Rook, defines the CSI drivers that the Ceph
+# CSI operator (installed by the rook-ceph chart) runs.
+#
+# Start from Rook's recommended values
+# (rook/deploy/charts/ceph-csi-drivers/values.yaml for the Rook release): the
+# driver names must stay rook-ceph.{rbd,cephfs}.csi.ceph.com, the provisioner
+# names in the StorageClasses, and the image set is the ConfigMap the rook-ceph
+# chart writes. The settings below keep what Rook v1.19 configured. Per-driver
+# values override driverSpecDefaults, so they are set on each driver.
+operatorConfig:
+  namespace: rook-ceph
+  driverSpecDefaults:
+    imageSet:
+      name: rook-csi-operator-image-set-configmap
+    nodePlugin:
+      priorityClassName: system-node-critical
+    controllerPlugin:
+      priorityClassName: system-cluster-critical
+
+drivers:
+  rbd:
+    enabled: true
+    name: rook-ceph.rbd.csi.ceph.com
+    clusterName: rook-ceph
+    # Rook's CSI_GRPC_TIMEOUT_SECONDS; the chart default is 30.
+    grpcTimeout: 150
+    # Logs to stdout only, no log files on the node.
+    log:
+      rotation:
+        enabled: false
+    # No VolumeSnapshot CRDs in the cluster, so no snapshotter sidecar.
+    snapshotPolicy: none
+    controllerPlugin:
+      replicas: 2
+  cephfs:
+    enabled: true
+    name: rook-ceph.cephfs.csi.ceph.com
+    clusterName: rook-ceph
+    grpcTimeout: 150
+    log:
+      rotation:
+        enabled: false
+    snapshotPolicy: none
+    controllerPlugin:
+      replicas: 2
+  nfs:
+    enabled: false
+    name: rook-ceph.nfs.csi.ceph.com
+  nvmeof:
+    enabled: false
+    name: rook-ceph.nvmeof.csi.ceph.com
